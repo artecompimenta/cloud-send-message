@@ -1,0 +1,58 @@
+name: Send message to Supabase
+
+on:
+  workflow_dispatch:
+    inputs:
+      conversation_id:
+        description: "ID da conversa (UUID)"
+        required: true
+        type: string
+      direcao:
+        description: "Direção da mensagem (entrada/saida)"
+        required: true
+        default: "entrada"
+        type: choice
+        options:
+          - entrada
+          - saida
+      texto:
+        description: "Conteúdo da mensagem"
+        required: true
+        type: string
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Chamar RPC send_message no Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          CONVERSATION_ID: ${{ github.event.inputs.conversation_id }}
+          DIRECAO: ${{ github.event.inputs.direcao }}
+          TEXTO: ${{ github.event.inputs.texto }}
+        run: |
+                  set -euo pipefail
+          echo "→ Enviando mensagem para a conversa ${CONVERSATION_ID} (${DIRECAO})"
+
+          RESPONSE="$(curl -sS -X POST "${SUPABASE_URL}/rest/v1/rpc/send_message" \
+            -H "Content-Type: application/json" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            -d "{\"p_conversation_id\":\"${CONVERSATION_ID}\",\"p_direcao\":\"${DIRECAO}\",\"p_texto\":\"${TEXTO}\"}")"
+
+          echo "→ Resposta:"
+          echo "${RESPONSE}"
+
+          set -euo pipefail
+          echo "→ Enviando mensagem para a conversa ${CONVERSATION_ID} (${DIRECAO})"
+
+          RESPONSE="$(curl -sS -X POST "${SUPABASE_URL}/rest/v1/rpc/send_message" \
+            -H "Content-Type: application/json" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+            -d "{\"p_conversation_id\":\"${CONVERSATION_ID}\",\"p_direcao\":\"${DIRECAO}\",\"p_texto\":\"${TEXTO}\"}")"
+
+          echo "→ Resposta:"
+          echo "${RESPONSE}"

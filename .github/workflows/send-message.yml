@@ -23,7 +23,6 @@ on:
 jobs:
   send:
     runs-on: ubuntu-latest
-
     steps:
       - name: Chamar RPC send_message no Supabase
         env:
@@ -33,26 +32,14 @@ jobs:
           DIRECAO: ${{ github.event.inputs.direcao }}
           TEXTO: ${{ github.event.inputs.texto }}
         run: |
-                  set -euo pipefail
-          echo "→ Enviando mensagem para a conversa ${CONVERSATION_ID} (${DIRECAO})"
-
-          RESPONSE="$(curl -sS -X POST "${SUPABASE_URL}/rest/v1/rpc/send_message" \
-            -H "Content-Type: application/json" \
-            -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
-            -d "{\"p_conversation_id\":\"${CONVERSATION_ID}\",\"p_direcao\":\"${DIRECAO}\",\"p_texto\":\"${TEXTO}\"}")"
-
-          echo "→ Resposta:"
-          echo "${RESPONSE}"
-
           set -euo pipefail
-          echo "→ Enviando mensagem para a conversa ${CONVERSATION_ID} (${DIRECAO})"
+          echo "👉 Enviando mensagem para a conversa ${CONVERSATION_ID} (${DIRECAO})"
 
-          RESPONSE="$(curl -sS -X POST "${SUPABASE_URL}/rest/v1/rpc/send_message" \
+          RESPONSE=$(curl -sS -X POST "${SUPABASE_URL}/rest/v1/rpc/send_message" \
             -H "Content-Type: application/json" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
-            -d "{\"p_conversation_id\":\"${CONVERSATION_ID}\",\"p_direcao\":\"${DIRECAO}\",\"p_texto\":\"${TEXTO}\"}")"
+            -d "{\"p_conversation_id\":\"${CONVERSATION_ID}\",\"p_direcao\":\"${DIRECAO}\",\"p_texto\":\"${TEXTO}\"}")
 
-          echo "→ Resposta:"
+          echo "📩 Resposta:"
           echo "${RESPONSE}"
